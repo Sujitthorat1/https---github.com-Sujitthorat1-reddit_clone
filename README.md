@@ -1,16 +1,33 @@
-# reddit_clone
+# Reddit Clone
 
-A new Flutter project.
+Responsive Full Stack Reddit Clone - Works on Android, iOS & Web!
+
+## Features
+
+- Google/Guest Authentication
+- Create, Join community
+- Community Profile (Avatar, Banner, Members)
+- Edit Description and Avatar of community
+- Post (link only, photo, text only)
+- Displaying posts from communities user is part of
+- Upvote, Downvote
+- Comment
+- Award the Post
+- Update Karma
+- Add Moderators
+- Moderator - remove post
+- Delete post
+- User Profile (Avatar, Banner)
+- Theme Switch
+- Cross Platform
+- Responsive UI
+- Latest posts (instead of home, display this to guest users)
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Provide instructions on how to get a copy of your project up and running on a local machine. Include any dependencies, prerequisites, and step-by-step instructions.
 
-A few resources to get you started if this is your first Flutter project:
+### Prerequisites
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+List any software or libraries that need to be installed before running the application.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
