@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/core/failure.dart';
-import 'package:reddit_clone/core/provider/storage_repositoy_provider.dart';
+import 'package:reddit_clone/core/provider/storage_repository_provider.dart';
 import 'package:reddit_clone/core/util.dart';
 import 'package:reddit_clone/features/community/repository/community_repository.dart';
 import 'package:reddit_clone/features/controller/auth_controller.dart';

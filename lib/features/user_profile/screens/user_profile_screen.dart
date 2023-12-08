@@ -9,10 +9,9 @@ import '../../../core/common/loader.dart';
 class UserProfileScreen extends ConsumerWidget {
   final String uid;
   const UserProfileScreen({required this.uid, super.key});
-  
-  void navigateToEditUser(BuildContext context){
-    // Routemaster.of(),
 
+  void navigateToEditUser(BuildContext context) {
+    Routemaster.of(context).push('/edit-profile/$uid');
   }
 
   @override
@@ -34,7 +33,7 @@ class UserProfileScreen extends ConsumerWidget {
                             ),
                           ),
                           Container(
-                             alignment: Alignment.bottomLeft,
+                            alignment: Alignment.bottomLeft,
                             padding:
                                 const EdgeInsets.all(20).copyWith(bottom: 70),
                             child: CircleAvatar(
@@ -46,7 +45,7 @@ class UserProfileScreen extends ConsumerWidget {
                             alignment: Alignment.bottomLeft,
                             padding: const EdgeInsets.all(20),
                             child: OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () => navigateToEditUser(context),
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
