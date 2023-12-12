@@ -2,9 +2,12 @@
     "java.configuration.updateBuildConfiguration": "interactive",
     "cSpell.words": [
         "Downvote",
+        "downvotes",
         "fpdart",
         "prefs",
         "uids",
-        "Upvote"
+        "Upvote",
+        "upvotes",
+        "userername"
     ]
 }

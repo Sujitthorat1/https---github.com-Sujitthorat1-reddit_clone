@@ -74,7 +74,7 @@ FutureVoid leaveCommunity(String communityName, String userId) async {
         (event) => Community.fromMap(event.data() as Map<String, dynamic>));
   }
 
-  FutureVoid editCommunity(Community community) async {
+  FutureVoid editCommunity(Community community) async { 
     try {
       return right(_communities.doc(community.name).update(community.toMap()));
       // object

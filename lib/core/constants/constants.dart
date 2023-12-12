@@ -1,3 +1,6 @@
+import 'package:reddit_clone/features/community/screens/add_mode_screen.dart';
+import 'package:reddit_clone/features/feed/feed_screen.dart';
+import 'package:reddit_clone/features/post/screens/add_post_screen.dart';
 
 class Constants {
   static const logoPath = 'assets/images/logo.png';
@@ -31,4 +34,9 @@ class Constants {
     'thankyou': '${Constants.awardsPath}/thankyou.png',
     'til': '${Constants.awardsPath}/til.png',
   };
+
+  static const tabWidget = [
+    FeedScreen(),
+    AddPostScreen(),
+  ];
 }

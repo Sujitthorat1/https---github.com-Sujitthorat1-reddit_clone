@@ -85,7 +85,7 @@ class ThemeNotifier extends StateNotifier<ThemeData> {
     } else {
       _mode = ThemeMode.dark;
       state = Pallete.darkModeAppTheme;
-      prefs.setString('theme', 'light');
+      prefs.setString('theme', 'dark');
     }
   }
 }
