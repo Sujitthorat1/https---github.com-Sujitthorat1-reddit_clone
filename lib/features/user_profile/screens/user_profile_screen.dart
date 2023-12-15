@@ -49,11 +49,14 @@ class UserProfileScreen extends ConsumerWidget {
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
+                                
                                 ),
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 25),
                               ),
-                              child: const Text("Edit Profile"),
+                              child: const Text("Edit Profile",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ],

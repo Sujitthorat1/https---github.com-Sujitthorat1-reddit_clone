@@ -47,9 +47,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
   }
 
   void sharePost() {
-    if (widget.type == 'image' &&
-        bannerFile != null &&
-        titleController.text.isNotEmpty) {
+    if (widget.type == 'image' &&(bannerFile != null) && titleController.text.isNotEmpty) {
       ref.read(postControllerProvider.notifier).shareImagePost(
             context: context,
             title: titleController.text.trim(),
