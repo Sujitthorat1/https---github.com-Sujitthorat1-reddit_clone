@@ -7,6 +7,7 @@ import 'package:reddit_clone/core/provider/firebase_provider.dart';
 import 'package:reddit_clone/core/type_def.dart';
 
 import '../../../models/community_model.dart';
+import '../../../models/post_model.dart';
 
 final communityRepositoryProvider = Provider((ref) {
   return CommunityRepository(firestore: ref.watch(firestoreProvider));
@@ -119,6 +120,19 @@ FutureVoid leaveCommunity(String communityName, String userId) async {
     }
   }
 
+   Stream<List<Post>> getCommunityPosts(String name) {
+    return _posts
+        .where('communityName', isEqualTo: name)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (event) => event.docs
+              .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
+              .toList(),
+        );
+  }
+    CollectionReference get _posts =>
+      _firestore.collection(FirebaseConstants.postCollection);
   CollectionReference get _communities =>
       _firestore.collection(FirebaseConstants.communitiesCollection);
 }

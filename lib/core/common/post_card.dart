@@ -1,9 +1,13 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/common/error_text.dart';
+import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
+import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/features/controller/auth_controller.dart';
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
+import 'package:routemaster/routemaster.dart';
 
 import '../../models/post_model.dart';
 import '../../theme/pallet.dart';
@@ -19,18 +23,25 @@ class PostCard extends ConsumerWidget {
     ref.read(postControllerProvider.notifier).deletePost(post, context);
   }
 
-    void upvotePost(WidgetRef ref,) {
+  void upvotePost(
+    WidgetRef ref,
+  ) {
     ref.read(postControllerProvider.notifier).upvote(post);
   }
 
-  
   void downvotePost(
     WidgetRef ref,
   ) {
     ref.read(postControllerProvider.notifier).downvote(post);
   }
 
+  void navigateToUser(BuildContext context) {
+    Routemaster.of(context).push('/u/${post.uid}');
+  }
 
+  void navigateToCommunity(BuildContext context) {
+    Routemaster.of(context).push('/r/${post.communityName}');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,11 +74,14 @@ class PostCard extends ConsumerWidget {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(post.communityProfilePic),
-                                  backgroundColor: Colors.blue,
-                                  radius: 16,
+                                GestureDetector(
+                                  onTap: ()=> navigateToCommunity(context),
+                                  child: CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(post.communityProfilePic),
+                                    backgroundColor: Colors.blue,
+                                    radius: 16,
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8),
@@ -79,9 +93,12 @@ class PostCard extends ConsumerWidget {
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      Text(
-                                        'u/${post.username}',
-                                        style: const TextStyle(fontSize: 12),
+                                      GestureDetector(
+                                        onTap: () => navigateToUser(context),
+                                        child: Text(
+                                          'u/${post.username}',
+                                          style: const TextStyle(fontSize: 12),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -139,11 +156,12 @@ class PostCard extends ConsumerWidget {
                             ),
                           ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: () =>upvotePost(ref),
+                                  onPressed: () => upvotePost(ref),
                                   icon: Icon(
                                     Constants.up,
                                     size: 30,
@@ -157,14 +175,14 @@ class PostCard extends ConsumerWidget {
                                   style: const TextStyle(fontSize: 17),
                                 ),
                                 IconButton(
-                                  onPressed: ()=> downvotePost(ref),
+                                  onPressed: () => downvotePost(ref),
                                   icon: Icon(
                                     Constants.down,
                                     size: 30,
                                     color: post.downvotes.contains(user.uid)
                                         ? Pallete.blueColor
                                         : null,
-                                  ),
+                                  ),  
                                 )
                               ],
                             ),
@@ -183,7 +201,27 @@ class PostCard extends ConsumerWidget {
                                       style: const TextStyle(fontSize: 17),
                                     ),
                                   ],
-                                )
+                                ),
+                                ref
+                                    .watch(getCommunityByNameProvider(
+                                        post.communityName))
+                                    .when(
+                                      data: (data) {
+                                        if (data.mods.contains(user.uid)) {
+                                          return IconButton(
+                                              onPressed: () => deletePost(ref, context),
+                                              icon: const Icon(
+                                                Icons.admin_panel_settings,
+                                              ));
+                                        }
+
+                                        return const SizedBox();
+                                      },
+                                      error: (error, stackTrace) => ErrorText(
+                                        error: error.toString(),
+                                      ),
+                                      loading: () => const Loader(),
+                                    ),
                               ],
                             )
                           ],
