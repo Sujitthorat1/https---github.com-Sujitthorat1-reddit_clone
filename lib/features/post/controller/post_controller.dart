@@ -1,10 +1,12 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/enums/enums.dart';
 import 'package:reddit_clone/core/provider/storage_repository_provider.dart';
 import 'package:reddit_clone/core/util.dart';
 import 'package:reddit_clone/features/controller/auth_controller.dart';
 import 'package:reddit_clone/features/post/repository/post_repository.dart';
+import 'package:reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:reddit_clone/models/comment_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:routemaster/routemaster.dart';
@@ -32,7 +34,6 @@ final getPostByIdProvider = StreamProvider.family((ref, String postId) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.getPostById(postId);
 });
-
 
 final getPostCommentsProvider = StreamProvider.family((ref, String postId) {
   final postController = ref.watch(postControllerProvider.notifier);
@@ -78,6 +79,8 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.textPost);
+
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
@@ -111,6 +114,10 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+    _ref
+        .read(userProfileControllerProvider.notifier)
+        .updateUserKarma(UserKarma.linkPost);
+
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted successfully!');
@@ -150,6 +157,10 @@ class PostController extends StateNotifier<bool> {
           link: r);
 
       final res = await _postRepository.addPost(post);
+    _ref
+          .read(userProfileControllerProvider.notifier)
+          .updateUserKarma(UserKarma.imagePost);
+
       state = false;
       res.fold((l) => showSnackBar(context, l.message), (r) {
         showSnackBar(context, 'Posted successfully!');
@@ -167,6 +178,10 @@ class PostController extends StateNotifier<bool> {
 
   void deletePost(Post post, BuildContext context) async {
     final res = await _postRepository.deletePost(post);
+    _ref
+        .read(userProfileControllerProvider.notifier)
+        .updateUserKarma(UserKarma.deletePost);
+
     res.fold(
       (l) => null,
       (r) => showSnackBar(context, 'Deleted successfully!'),
@@ -202,6 +217,10 @@ class PostController extends StateNotifier<bool> {
         username: user.name,
         profilePic: user.profilePic);
     final res = await _postRepository.addComment(comment);
+    _ref
+        .read(userProfileControllerProvider.notifier)
+        .updateUserKarma(UserKarma.comment);
+
     res.fold((l) => showSnackBar(context, l.message), (r) => null);
   }
 
