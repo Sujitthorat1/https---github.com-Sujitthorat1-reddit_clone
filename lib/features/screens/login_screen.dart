@@ -7,6 +7,9 @@ import 'package:reddit_clone/features/controller/auth_controller.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
+  void signInAsGuest(WidgetRef ref, BuildContext context) {
+    ref.read(authControllerProvider.notifier).signInAsGuest(context);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +27,7 @@ class LoginScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: TextButton(
-                onPressed: () {},
+                onPressed: () => signInAsGuest(ref, context),
                 child: const Text(
                   "Skip",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
