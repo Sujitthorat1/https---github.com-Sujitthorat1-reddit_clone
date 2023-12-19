@@ -79,7 +79,9 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
-    _ref.read(userProfileControllerProvider.notifier).updateUserKarma(UserKarma.textPost);
+    _ref
+        .read(userProfileControllerProvider.notifier)
+        .updateUserKarma(UserKarma.textPost);
 
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
@@ -157,7 +159,7 @@ class PostController extends StateNotifier<bool> {
           link: r);
 
       final res = await _postRepository.addPost(post);
-    _ref
+      _ref
           .read(userProfileControllerProvider.notifier)
           .updateUserKarma(UserKarma.imagePost);
 
@@ -222,6 +224,26 @@ class PostController extends StateNotifier<bool> {
         .updateUserKarma(UserKarma.comment);
 
     res.fold((l) => showSnackBar(context, l.message), (r) => null);
+  }
+
+  void awardPost({
+    required Post post,
+    required String award,
+    required BuildContext context,
+  }) async {
+    final user = _ref.read(userProvider)!;
+    final res = await _postRepository.awardPost(post, award, user.uid);
+
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      _ref
+          .read(userProfileControllerProvider.notifier)
+          .updateUserKarma(UserKarma.awardPost);
+      _ref.read(userProvider.notifier).update((state) {
+        state?.awards.remove(award);
+        return state;
+      });
+      Routemaster.of(context).pop();
+    });
   }
 
   Stream<List<Comment>> fetchPostComments(String postId) {
