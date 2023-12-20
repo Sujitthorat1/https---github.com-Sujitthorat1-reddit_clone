@@ -47,15 +47,18 @@ class UserProfileController extends StateNotifier<bool> {
     required File? bannerFile,
     required BuildContext context,
     required String name,
+    required Uint8List? profileWebFile,
+    required Uint8List? bannerWebFile,
   }) async {
     state = true;
     UserModel user = _ref.read(userProvider)!;
 
-    if (profileFile != null) {
+    if (profileFile != null || profileWebFile != null) {
       final res = await _storageRepository.storeFile(
         path: "users/profile",
         id: user.uid,
         file: profileFile,
+        webFile: profileWebFile,
       );
 
       res.fold(
@@ -64,11 +67,12 @@ class UserProfileController extends StateNotifier<bool> {
       );
     }
 
-    if (bannerFile != null) {
+    if (bannerFile != null || bannerWebFile != null) {
       final res = await _storageRepository.storeFile(
         path: 'users/banner',
         id: user.uid,
         file: bannerFile,
+        webFile: bannerWebFile,
       );
 
       res.fold(
@@ -105,7 +109,7 @@ class UserProfileController extends StateNotifier<bool> {
 
   void updateUserKarma(UserKarma karma) async {
     UserModel user = _ref.read(userProvider)!;
-    user = user.copyWith(karma:user.karma + karma.karma);
+    user = user.copyWith(karma: user.karma + karma.karma);
 
     final res = await _userProfileRepository.updateUserKarma(user);
     res.fold((l) => null,

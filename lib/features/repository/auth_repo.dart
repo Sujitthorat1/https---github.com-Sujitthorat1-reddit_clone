@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,18 +37,29 @@ class AuthRepository {
 
   FutureEither<UserModel> signWithGoogle(bool isFormLogin) async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final credential = GoogleAuthProvider.credential(
-        accessToken: (await googleUser?.authentication)?.accessToken,
-        idToken: (await googleUser?.authentication)?.idToken,
-      );
-
       UserCredential userCredential;
-      if (isFormLogin) {
-        userCredential = await _auth.signInWithCredential(credential);
+
+      //If condition is used to login in the web browser
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        googleProvider
+            .addScope('https://www.googleapis.com/auth/contacts.readonly');
+        //In web signInWithPopup is work
+        userCredential = await _auth.signInWithPopup(googleProvider);
       } else {
-        userCredential =
-            await _auth.currentUser!.linkWithCredential(credential);
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        final credential = GoogleAuthProvider.credential(
+          accessToken: (await googleUser?.authentication)?.accessToken,
+          idToken: (await googleUser?.authentication)?.idToken,
+        );
+
+        if (isFormLogin) {
+          //in mobile and IOS signInWithCredential or linkWithCredential works
+          userCredential = await _auth.signInWithCredential(credential);
+        } else {
+          userCredential =
+              await _auth.currentUser!.linkWithCredential(credential);
+        }
       }
       UserModel userModel;
       if (userCredential.additionalUserInfo!.isNewUser) {

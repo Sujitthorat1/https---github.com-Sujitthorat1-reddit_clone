@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
@@ -7,19 +8,18 @@ import 'package:reddit_clone/features/home/delegates/search_community_delegates.
 import 'package:reddit_clone/features/home/drawars/community_list_drawer.dart';
 import 'package:reddit_clone/features/home/drawars/profile_drawer.dart';
 import 'package:reddit_clone/theme/pallet.dart';
+import 'package:routemaster/routemaster.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-    
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
-  }
+}
 
-  class _HomeScreenState extends ConsumerState<HomeScreen>{
-    // ignore: unused_field
-    int _page = 0;
-
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  // ignore: unused_field
+  int _page = 0;
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
@@ -29,7 +29,7 @@ class HomeScreen extends ConsumerStatefulWidget {
     Scaffold.of(context).openEndDrawer();
   }
 
-  void onPageChanged(int page){
+  void onPageChanged(int page) {
     setState(() {
       _page = page;
     });
@@ -56,6 +56,13 @@ class HomeScreen extends ConsumerStatefulWidget {
                     context: context, delegate: SearchCommunityDelegate(ref));
               },
               icon: const Icon(Icons.search)),
+          if(kIsWeb)
+          IconButton(
+            onPressed: () {
+              Routemaster.of(context).push('/add-post');
+            },
+            icon: const Icon(Icons.add),
+          ),
           Builder(builder: (context) {
             return IconButton(
               onPressed: () => displayEndDrawer(context),
@@ -67,31 +74,31 @@ class HomeScreen extends ConsumerStatefulWidget {
         ],
       ),
       body: Constants.tabWidget[_page],
-      
       drawer: const CommunityListDrawer(),
-      endDrawer:isGuest ? null : const ProfileDrawer(),
-      bottomNavigationBar:isGuest ? null :  CupertinoTabBar(
-        backgroundColor:currentTheme.backgroundColor,
-        activeColor: currentTheme.iconTheme.color,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
+      endDrawer: isGuest ? null : const ProfileDrawer(),
+      bottomNavigationBar: isGuest || kIsWeb
+          ? null
+          : CupertinoTabBar(
+              backgroundColor: currentTheme.backgroundColor,
+              activeColor: currentTheme.iconTheme.color,
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.home,
+                  ),
+                  label: '',
+                ),
+       
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.add,
+                  ),
+                  label: '',
+                ),
+              ],
+              onTap: onPageChanged,
+              currentIndex: _page,
             ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add,
-            ),
-            label: '',
-          ),
-        ],
-        onTap: onPageChanged,
-        currentIndex: _page,
-      ),
     );
   }
-
 }
-    

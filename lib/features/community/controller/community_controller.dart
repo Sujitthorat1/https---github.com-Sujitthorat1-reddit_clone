@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -105,14 +106,16 @@ class CommunityController extends StateNotifier<bool> {
     required File? bannerFile,
     required BuildContext context,
     required Community community,
+    required Uint8List? profileWebFile,
+    required Uint8List? bannerWebFile,
   }) async {
     state = true;
-    if (profileFile != null) {
+    if (profileFile != null || profileWebFile != null) {
       final res = await _storageRepository.storeFile(
-        path: "communities/profile",
-        id: community.name,
-        file: profileFile,
-      );
+          path: "communities/profile",
+          id: community.name,
+          file: profileFile,
+          webFile: profileWebFile);
 
       res.fold(
         (l) => showSnackBar(context, l.message),
@@ -120,12 +123,13 @@ class CommunityController extends StateNotifier<bool> {
       );
     }
 
-    if (bannerFile != null) {
+    if (bannerFile != null || bannerWebFile != null) {
       //communities/banner/memes
       final res = await _storageRepository.storeFile(
         path: 'communities/banner',
         id: community.name,
         file: bannerFile,
+        webFile: bannerWebFile,
       );
 
       res.fold(
