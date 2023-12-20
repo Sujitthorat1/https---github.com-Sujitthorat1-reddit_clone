@@ -34,9 +34,9 @@ class AuthController extends StateNotifier<bool> {
   // Stream<User?> get authStateChange => _authRepository.authStateChange;
   Stream<User?> get authStateChange => _authRepository.authStateChange;
 
-  void signInWithGoogle(BuildContext context) async {
+  void signInWithGoogle(BuildContext context, bool isFormLogin) async {
     state = true;
-    final user = await _authRepository.signWithGoogle();
+    final user = await _authRepository.signWithGoogle(isFormLogin);
     state = false;
     user.fold(
         (l) => showSnackBar(context, l.message),

@@ -60,6 +60,7 @@ class PostCard extends ConsumerWidget {
     final isTypeLink = post.type == 'link';
     final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
+    final isGuest = !user.isAuthenticated;
     return Column(
       children: [
         Container(
@@ -131,13 +132,15 @@ class PostCard extends ConsumerWidget {
                           ),
                           SizedBox(
                             height: 25,
-                            child: ListView.builder( 
+                            child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: post.awards.length,
                               itemBuilder: (context, index) {
                                 final award = post.awards[index];
                                 return Image.asset(
-                                    Constants.awards[award]!, height: 25,);
+                                  Constants.awards[award]!,
+                                  height: 25,
+                                );
                               },
                             ),
                           )
@@ -188,7 +191,7 @@ class PostCard extends ConsumerWidget {
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: () => upvotePost(ref),
+                                  onPressed:isGuest ? () {} : () => upvotePost(ref),
                                   icon: Icon(
                                     Constants.up,
                                     size: 30,
@@ -202,7 +205,8 @@ class PostCard extends ConsumerWidget {
                                   style: const TextStyle(fontSize: 17),
                                 ),
                                 IconButton(
-                                  onPressed: () => downvotePost(ref),
+                                  onPressed:
+                                      isGuest ? () {} :  () => downvotePost(ref),
                                   icon: Icon(
                                     Constants.down,
                                     size: 30,
@@ -252,7 +256,9 @@ class PostCard extends ConsumerWidget {
                                       loading: () => const Loader(),
                                     ),
                                 IconButton(
-                                    onPressed: () {
+                                    onPressed: isGuest
+                                        ? () {}
+                                        :  () {
                                       showDialog(
                                           context: context,
                                           builder: (context) => Dialog(

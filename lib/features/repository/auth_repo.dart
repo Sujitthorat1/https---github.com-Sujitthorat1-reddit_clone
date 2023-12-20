@@ -34,7 +34,7 @@ class AuthRepository {
 
   Stream<User?> get authStateChange => _auth.authStateChanges();
 
-  FutureEither<UserModel> signWithGoogle() async {
+  FutureEither<UserModel> signWithGoogle(bool isFormLogin) async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       final credential = GoogleAuthProvider.credential(
@@ -42,9 +42,13 @@ class AuthRepository {
         idToken: (await googleUser?.authentication)?.idToken,
       );
 
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-
+      UserCredential userCredential;
+      if (isFormLogin) {
+        userCredential = await _auth.signInWithCredential(credential);
+      } else {
+        userCredential =
+            await _auth.currentUser!.linkWithCredential(credential);
+      }
       UserModel userModel;
       if (userCredential.additionalUserInfo!.isNewUser) {
         userModel = UserModel(
